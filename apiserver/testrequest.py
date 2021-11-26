@@ -1,5 +1,5 @@
 import requests
-url = "http://127.0.0.1:10228/api/upload"
+url = "http://tagproject.sfedu.ru/api/upload"
 img = {
     "image": open("testimage.png", "rb")
 }
