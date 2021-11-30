@@ -5,15 +5,16 @@ import hashlib
 import psycopg2
 import datetime
 from pathlib import Path
+from base64 import decodestring
 
+# Constants
+CLIENT_PATH = "/var/www/html/rosambros/clients/images"
 REPOSITORY_DIR = Path(__file__).resolve().parent.parent
 
 # Import credentials module contains secret data
 from importlib.machinery import SourceFileLoader
 secret_credentials = SourceFileLoader('module.secret_credentials', '{}/secret_credentials.py'.format(REPOSITORY_DIR)).load_module()
 
-
-CLIENT_PATH = "/var/www/html/rosambros/clients/images"
 
 # Postgresql section
 def insert_client(client_data):
@@ -56,32 +57,31 @@ def insert_client(client_data):
     
     return {"status": "ok", "error": None}
 
+
 # Flask app
 app = Flask(__name__)
 
 @app.route("/", methods=["POST"])
 def process_image():
-    file = request.files["image"]
-    
-    # Read the image via file.stream
-    img = Image.open(file.stream)
-    
     # Read payload from request
     payload = request.form.to_dict()
     name = payload["name"]
     description = payload["description"]
     gps = payload["gps"]
+    image = payload["image"] # encoded base64 image
+    image_decoded = decodestring(image.encode()) # decode image
 
     # Save image to directory and get abspath
-    img_abspath = "{}/{}.{}".format(CLIENT_PATH, datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f"), str(img.format).lower()) # abspath to saved image
-    img.save(img_abspath)
+    img_abspath = "{}/{}.jpg".format(CLIENT_PATH, datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f")) # abspath to saved image
+    img = open(img_abspath, "wb")
+    img.write(image_decoded)
 
     # Push data to queue
     client_data = {
-        "img": img_abspath,
         "name": name,
         "description": description,
-        "gps": gps
+        "gps": gps,
+        "img": img_abspath
     }
     insert_status = insert_client(client_data) # Insert data to database
     
@@ -97,26 +97,10 @@ def process_image():
             "md5": {
                 "name": hashlib.md5(name.encode("utf-8")).hexdigest(),
                 "description": hashlib.md5(description.encode("utf-8")).hexdigest(),
-                "gps": hashlib.md5(gps.encode("utf-8")).hexdigest()
+                "gps": hashlib.md5(gps.encode("utf-8")).hexdigest(),
+                "image": hashlib.md5(image.encode("utf-8")).hexdigest()
             }
         })
-
-# @app.route('/upload_file', methods=['GET', 'POST'])
-# def upload_file():
-#     if request.method == 'POST':
-#         if 'image' not in request.files:
-#             return 'there is no image in form'
-#         image = request.files['image']
-#         print(image)
-#         return redirect(url_for('index'))
-    
-#     return '''
-#     <h1>Upload new File</h1>
-#     <form method="post" enctype="multipart/form-data">
-#         <input type="file" name="image">
-#         <input type="submit">
-#     </form>
-#     '''
 
 
 #### App error handlers ####
