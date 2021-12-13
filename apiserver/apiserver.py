@@ -6,6 +6,7 @@ import psycopg2
 import datetime
 from pathlib import Path
 from base64 import decodestring
+import json
 
 # Constants
 CLIENT_PATH = "/var/www/html/rosambros/clients/images"
@@ -17,7 +18,7 @@ secret_credentials = SourceFileLoader('module.secret_credentials', '{}/secret_cr
 
 
 # Postgresql section
-def insert_client(client_data):
+def rosambrosdb_insert_client(client_data):
     # Insert a new client into the clients table
     sql = """INSERT INTO client (img, name, description, gps) VALUES(%s, %s, %s, %s)"""
     conn = None
@@ -26,11 +27,11 @@ def insert_client(client_data):
     try:
         # Connect to database
         conn = psycopg2.connect(
-            host=secret_credentials.database["rosambros"]["HOST"],
-            database=secret_credentials.database["rosambros"]["NAME"],
-            user=secret_credentials.database["rosambros"]["USER"],
-            password=secret_credentials.database["rosambros"]["PASSWORD"],
-            port=secret_credentials.database["rosambros"]["PORT"]
+            host=secret_credentials.database["rosambrosdb"]["HOST"],
+            database=secret_credentials.database["rosambrosdb"]["NAME"],
+            user=secret_credentials.database["rosambrosdb"]["USER"],
+            password=secret_credentials.database["rosambrosdb"]["PASSWORD"],
+            port=secret_credentials.database["rosambrosdb"]["PORT"]
         )
         
         # Create a new cursor
@@ -38,9 +39,6 @@ def insert_client(client_data):
         
         # Execute the INSERT statement
         cur.execute(sql, (client_data['img'],client_data['name'],client_data['description'],client_data['gps'],))
-        
-        # Get the generated id back
-        #client_id = cur.fetchone()[0]
         
         # Commit the changes to the database
         conn.commit()
@@ -57,6 +55,42 @@ def insert_client(client_data):
     
     return {"status": "ok", "error": None}
 
+def road_insert_client(client_data):
+    # Insert a new client into the clients table
+    sql = """INSERT INTO client (img, name, description, gps) VALUES(%s, %s, %s, %s)"""
+    conn = None
+    client_id = None
+
+    try:
+        # Connect to database
+        conn = psycopg2.connect(
+            host=secret_credentials.database["ra_db"]["HOST"],
+            database=secret_credentials.database["ra_db"]["NAME"],
+            user=secret_credentials.database["ra_db"]["USER"],
+            password=secret_credentials.database["ra_db"]["PASSWORD"],
+            port=secret_credentials.database["ra_db"]["PORT"]
+        )
+        
+        # Create a new cursor
+        cur = conn.cursor()
+        
+        # Execute the INSERT statement
+        cur.execute(sql, (client_data['img'],client_data['name'],client_data['description'],client_data['gps'],))
+        
+        # Commit the changes to the database
+        conn.commit()
+        
+        count = cur.rowcount
+        # Close communication with the database
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return {"status": "db error", "error": error}
+    finally:
+        if conn is not None:
+            conn.close()
+    
+    return {"status": "ok", "error": None}
 
 # Flask app
 app = Flask(__name__)
@@ -64,10 +98,13 @@ app = Flask(__name__)
 @app.route("/", methods=["POST"])
 def process_image():
     # Read payload from request
-    payload = request.form.to_dict()
+    pl_str = request.get_data().decode('utf-8')
+    payload = json.loads(pl_str)
+    # payload = request.form.to_dict()
     name = payload["name"]
     description = payload["description"]
     gps = payload["gps"]
+    request_type = payload["request_type"]
     image = payload["image"] # encoded base64 image
     image_decoded = decodestring(image.encode()) # decode image
 
@@ -81,10 +118,16 @@ def process_image():
         "name": name,
         "description": description,
         "gps": gps,
-        "img": img_abspath
+        "img": img_abspath,
+        "request_type": request_type
     }
-    insert_status = insert_client(client_data) # Insert data to database
-    
+    # Insert data to databases
+    insert_status = ""
+    if request_type == "ambros":
+        insert_status = rosambrosdb_insert_client(client_data) # Insert data to rosambros database for neural network
+    elif request_type == "road":
+        insert_status = road_insert_client(client_data) # Insert data to complete road database
+
     # Return json answer
     if insert_status["status"] != "ok":
         return jsonify({
@@ -98,7 +141,8 @@ def process_image():
                 "name": hashlib.md5(name.encode("utf-8")).hexdigest(),
                 "description": hashlib.md5(description.encode("utf-8")).hexdigest(),
                 "gps": hashlib.md5(gps.encode("utf-8")).hexdigest(),
-                "image": hashlib.md5(image.encode("utf-8")).hexdigest()
+                "image": hashlib.md5(image.encode("utf-8")).hexdigest(),
+                "request_type": hashlib.md5(image.encode("utf-8")).hexdigest(),
             }
         })
 

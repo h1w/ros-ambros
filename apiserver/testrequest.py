@@ -9,7 +9,8 @@ payload = {
     "name": "Дима",
     "description": "Описание данной фотки, полный ужас, ямы повсюду, сделайте что-нибудь!!!",
     "gps": "41 24.2028, 2 10.4418",
-    "image": img_64_encode
+    "image": img_64_encode,
+    "request_type": "ambros",
 }
 
 # Send post request
