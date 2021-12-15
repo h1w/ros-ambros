@@ -13,8 +13,4 @@ payload = {
     "request_type": "ambros",
 }
 
-# Send post request
 r = requests.post(url, data=payload)
-
-# convert server response into JSON format
-print(r.json())
