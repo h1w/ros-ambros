@@ -1,0 +1,77 @@
+{% extends "base.html" %} {% block content %}
+
+<style>
+    #contacts-image {
+        display: block;
+        max-width: 80%;
+        height: auto;
+        margin: auto;
+        margin-bottom: 15px;
+        float: none!important;
+        border-radius: 3px;
+    }
+
+    #info {
+        margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-bottom: 35px;
+    }
+
+    #info-text {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #contacts-list {
+        margin-left: 30px;
+        margin-right: 30px;
+        margin-bottom: 30px;
+    }
+</style>
+
+<div class="container" style="margin-top:2%">
+    <!-- contacts card -->
+    <div class="card card-default" id="card_contacts">
+        <div id="contacts" class="panel-collapse collapse show" aria-expanded="true">
+            <div id="info">
+                <div id="info-text">
+                    <h1>Кто мы?</h1>
+                    <p>Кто мы?</p>
+                    <p>Кто мы?</p>
+                    <p>Кто мы?</p>
+                </div>
+                <a href="" class="fancylight popup-btn" data-fancybox-group="light"> 
+                    <img class="img-fluid" src="" alt="какая-то фотка">
+                </a>
+            </div>
+            <div id="contacts-list">
+                <ul class="list-group pull-down" id="contact-list">
+                    <li class="list-group-item" style="border-top: 0 none; border-bottom: 0 none; border-left: 0 none; border-right: 0 none;">
+                        <div class="row w-100">
+                            <div class="col-12 col-sm-6 col-md-9 text-center text-sm-left">
+                                <span class="fa fa-mobile fa-2x text-success float-right pulse" title="online now"></span>
+                                <label class="name lead">Общие контакты</label>
+                                <br>
+                                <span class="fa fa-envelope fa-fw text-muted" data-toggle="tooltip" data-original-title="" title=""></span>
+                                <span class="text-muted small text-truncate">ВКонтакте: <a href="" target="_blank">вк</a></span>
+                                <br>
+                                <span class="fa fa-envelope fa-fw text-muted" data-toggle="tooltip" data-original-title="" title=""></span>
+                                <span class="text-muted small text-truncate">Whatsapp: <a href="" target="_blank">вацап</a></span>
+                                <br>
+                                <span class="fa fa-envelope fa-fw text-muted" data-toggle="tooltip" data-original-title="" title=""></span>
+                                <span class="text-muted small text-truncate">Почта: example@mail.ru</span>
+                                <br>
+                                <span class="fa fa-envelope fa-fw text-muted" data-toggle="tooltip" data-original-title="" title=""></span>
+                                <span class="text-muted small text-truncate">Github: <a href="" target="_blank">github</a></span>
+                                <br>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,3 +1,4 @@
+from django.db.models import query
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 import os
@@ -17,7 +18,8 @@ import io
 from .utils import randomize_slug
 
 def home(request):
-    template_name = 'home.html'
+    template_name = 'map/map.html'
+    # tiles = "Stamen Terrain" - default
     m = folium.Map(location=[47.2243657, 38.9105216], tiles="OpenStreetMap", zoom_start=13)
 
     road_group = folium.FeatureGroup("Road")
@@ -27,31 +29,28 @@ def home(request):
     # queryset = Marker.objects.order_by('-created_on').filter(status=1)
     # queryset_drafts_only = Marker.objects.order_by('-created_on').filter(status=0)
 
-    road_locations = []
-    ambros_locations = []
+    tooltip = "Информация"
 
     for marker in queryset:
         lat, lon = marker.gps.split(',')
-        lat = lat.strip(' ')
-        lon = lon.strip(' ')
+        lat = float(lat.strip(' '))
+        lon = float(lon.strip(' '))
         if marker.marker_type == 'ambros':
-            ambros_locations.append((float(lat), float(lon)))
+            marker = folium.Marker(
+                location=[lat,lon],
+                icon=folium.Icon(color='green'),
+                popup=f"""<img width="500px" src="{settings.MEDIA_URL + marker.image_path}" alt="{marker.slug}"/><br><p>{marker.description}</p>""",
+                tooltip=tooltip,
+            )
+            ambros_group.add_child(marker)
         else:
-            road_locations.append((float(lat), float(lon)))
-
-    for lat, lon in road_locations:
-        marker = folium.Marker(
-            location=[lat, lon],
-            icon=folium.Icon(color='red'),
-        )
-        road_group.add_child(marker)
-
-    for lat, lon in ambros_locations:
-        marker = folium.Marker(
-            location=[lat, lon],
-            icon=folium.Icon(color='green'),
-        )
-        ambros_group.add_child(marker)
+            marker = folium.Marker(
+                location=[lat, lon],
+                icon=folium.Icon(color='red'),
+                popup=f"""<img width="500px" src="{settings.MEDIA_URL + marker.image_path}" alt="{marker.slug}"/><br><p>{marker.description}</p>""",
+                tooltip=tooltip,
+            )
+            road_group.add_child(marker)
 
     m.add_child(road_group)
     m.add_child(ambros_group)
@@ -59,13 +58,15 @@ def home(request):
     folium.LayerControl().add_to(m)
 
     m=m._repr_html_()
-    context = { 'my_map': m }
-    ## rendering
+    context = { 
+        'my_map': m,
+    }
+
     return render(request, template_name, context)
 
 @csrf_exempt
 def upload(request):
-    template_name = "upload.html"
+    template_name = "map/upload.html"
     context = {}
 
     if request.method == "POST":
@@ -79,7 +80,8 @@ def upload(request):
         img = Image.open(io.BytesIO(image_bytes))
         img = img.convert('RGB')
         img_format = 'jpg'
-        image_abspath = '{}{}.{}'.format(settings.MEDIA_ROOT, datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f"), img_format)
+        nametime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+        image_abspath = '{}{}.{}'.format(settings.MEDIA_ROOT, nametime, img_format)
         img.save(image_abspath)
         
 
@@ -87,7 +89,7 @@ def upload(request):
         marker_instance.name = name
         marker_instance.description = description
         marker_instance.gps = gps
-        marker_instance.image_path = image_abspath
+        marker_instance.image_path = "{}.{}".format(nametime, img_format)
         marker_instance.marker_type = request_type
 
         marker_instance.slug = randomize_slug(slugify(unidecode(marker_instance.name)))
@@ -99,7 +101,7 @@ def upload(request):
     return render(request, template_name, context)
 
 def marker_detail(request, slug):
-    template_name = 'marker_detail.html'
+    template_name = 'map/marker_detail.html'
 
     marker = get_object_or_404(Marker, slug=slug)
 
@@ -107,7 +109,7 @@ def marker_detail(request, slug):
         'name': marker.name,
         'description': marker.description,
         'gps': marker.gps,
-        'image_path': marker.image_path,
+        'image_path': settings.MEDIA_URL + marker.image_path,
         'marker_type': marker.marker_type
     }
 

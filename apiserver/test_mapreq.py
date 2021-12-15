@@ -1,7 +1,7 @@
 import requests
 import base64
 
-url = "http://10.100.10.3:8001/map/api/upload"
+url = "http://tagproject.sfedu.ru/map/api/upload"
 
 # headers = {
 #     'accept': 'text/html,application/xhtml+xml,application/xml',
@@ -19,8 +19,8 @@ img = open("testimage.png", "rb").read()
 img_64_encode = base64.encodebytes(img).decode()
 payload = {
     "name": "aboba",
-    "description": "описание aboba",
-    "gps": "aboba1 aboba2",
+    "description": "aboba aboba aboba...",
+    "gps": "47.2177, 39.0248",
     "image": img_64_encode,
     "request_type": "road",
 }

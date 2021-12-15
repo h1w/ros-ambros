@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mt-3 left">
+            {% for new in news_list %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    {% comment %} <h2 class="card-title"><a href="{% url 'article_detail' article.slug %}" style="text-decoration: none !important; color: black;">{{ article.title }}</a></h2> {% endcomment %}
+                    <p class="card-text">{{ new.content }}</p>
+                </div>
+                <div class="card-footer text-muted">
+                    <a href="{% url 'new_detail' new.slug  %}" class="btn btn-outline-info float-right">Подробнее &rarr;</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

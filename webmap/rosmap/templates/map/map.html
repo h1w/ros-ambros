@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block content %}
+
+<script src="https://kit.fontawesome.com/87f0a5a458.js" crossorigin="anonymous"></script>
+
+<div class="row">
+
+    <div class="col-lg-12 text-center">
+
+     <h1 class="mt-5">Карта качества дорожного покрытия и мест заражения амброзией</h1>
+
+      <div class="container">
+        <div class="raw">
+          {{ my_map|safe }}
+        </div>
+        <br>
+        <div class="container">
+
+          <div class="row justify-content-md-left">
+            <div class="col col-5">
+
+              <ul class="list-group">
+                
+                <li class="list-group-item" style="border-top: 0 none; border-bottom: 0 none; border-left: 0 none; border-right: 0 none;">
+                  <p style="display:inline">
+                    <i class='fas fa-map-marker-alt' style='font-size:24px;color:red'></i> - Ямы
+                  </p>
+                </li>
+                
+                <li class="list-group-item" style="border-top: 0 none; border-bottom: 0 none; border-left: 0 none; border-right: 0 none;">
+                  <p style="display:inline">
+                    <i class='fas fa-map-marker-alt' style='font-size:24px;color:green'></i> - Амброзия
+                  </p>
+                </li>
+              
+              </ul>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      
+
+   </div>
+
+ </div>
+
+{% endblock %}

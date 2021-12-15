@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'map',
+    'news',
 ]
 
 MIDDLEWARE = [
@@ -59,11 +60,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'rosmap.urls'
 
+TEMPLATES_DIRS = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'map','templates'),
+            TEMPLATES_DIRS
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -139,3 +141,5 @@ STATICFILES_DIRS = [
 
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = '/var/www/html/rosambros/media/'
+
+# STATIC_ROOT = '/var/www/html/rosambros/ros-ambros/webmap/rosmap/static/'
