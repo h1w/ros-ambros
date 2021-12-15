@@ -21,3 +21,18 @@ class Marker(models.Model):
     
     def __str__(self):
         return self.name
+    
+class ProblemRequest(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    marker_slug = models.CharField(max_length=300)
+    image_path = models.CharField(max_length=300)
+    slug = models.SlugField(max_length=230, unique=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_on']
+    
+    def __str__(self):
+        return self.name

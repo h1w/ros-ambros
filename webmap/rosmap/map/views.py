@@ -3,7 +3,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 import os
 import folium
-from .models import Marker
+from .models import Marker, ProblemRequest
 import django.views.generic as generis
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -16,6 +16,7 @@ import datetime
 from PIL import Image
 import io
 from .utils import randomize_slug
+from django.contrib import messages
 
 def home(request):
     template_name = 'map/map.html'
@@ -114,3 +115,18 @@ def marker_detail(request, slug):
     }
 
     return render(request, template_name, context)
+
+def problem_request(request, slug):
+    template_name = 'map/problem_request.html'
+
+    if request.method == "GET":
+        pass
+    elif request.method == "POST":
+        pass
+    problemrequest = ProblemRequest()
+
+    context={}
+
+    messages.info(request, 'Ваш запрос был отправлен.')
+
+    return HttpResponseRedirect(request.build_absolute_uri('/'))

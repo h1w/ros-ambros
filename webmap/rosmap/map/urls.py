@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.home, name='map_page'),
     path('map/api/upload', views.upload, name='upload'),
     path('map/marker/<slug:slug>/', views.marker_detail, name='marker_detail'),
+    path('map/marker/<slug:slug>/problemrequest', views.problem_request, name='problem_request'),
 ]
