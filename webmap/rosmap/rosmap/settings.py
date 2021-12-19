@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'map',
     'news',
+    'news.templatetags',
 ]
 
 MIDDLEWARE = [

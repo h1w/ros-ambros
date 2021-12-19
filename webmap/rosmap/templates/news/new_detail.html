@@ -1,27 +1,37 @@
 {% extends 'base.html' %} {% block content %}
+{% load customtags %}
 
-{% comment %} <style>
+<style>
 
-  .card {
-      margin: 0 auto; /* Added */
-      float: none; /* Added */
-      margin-bottom: 10px; /* Added */
-  }
+/* Markdown custom templates */
+/* "preview" templates */
+img[alt="preview <"] {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+  float: none!important;
+}
+
+/* Content images types */
+/* img-type1: centered image on all div width */
+img[alt="img-type1"] {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+  float: none!important;
+}
+
+.avatar {
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
 
 </style>
-
-<section class="pb-6">
-<div class="container">
-    <div class="row">
-      <div class="col">
-        <div class="card card-body" style="width: 50rem;">
-          <h1>{% block title %} {{ new.title }} {% endblock title %}</h1>
-          <p class="card-text ">{{ new.content }}</p> <!--| safe --> 
-        </div>
-      </div>
-    </div>
-  </div>
-</section> {% endcomment %}
 
 <section class="py-7">
 
@@ -30,8 +40,11 @@
           <div class="col-md-4 pt-4 px-md-2 px-lg-3" style="width: 50rem;">
               <div class="card h-100 w-100">
                   <div class="card card-body">
+                    {% comment %} <h1>{% block title %} {{ new.title }} {% endblock title %}</h1>
+                    <p class="card-text ">{{ new.content }}</p> <!--| safe -->  {% endcomment %}
                     <h1>{% block title %} {{ new.title }} {% endblock title %}</h1>
-                    <p class="card-text ">{{ new.content }}</p> <!--| safe --> 
+                    <p class=" text-muted">{{ new.created_on }}</p>
+                    <p class="card-text ">{{ new.content | custom_markdown | html_edit | safe }}</p> <!--| safe --> 
                   </div>
               </div>
           </div>
