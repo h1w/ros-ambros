@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+
+<style>
+
+#info-text {
+    margin: 5%;
+    margin-top: 1%;
+}
+
+</style>
+
+<section class="py-7">
+
+    <div class="container-lg">
+        <div class="row h-100 justify-content-center">
+            <div class="col-md-4 pt-4 px-md-2 px-lg-3" style="width: 50rem;">
+                <div class="card h-100 w-100">
+                    <div id="contacts" class="panel-collapse collapse show" aria-expanded="true">
+                        <div id="info">
+                            <div class="text-left" id="info-text">
+                                <h1 class="text-center">Поддержи проект</h1>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;Любая сумма поможет в развитии проекта, который не только позволит жителям города удобнее сообщать о проблемах, но и позволит привлеч внимание властей, городских служб и групп волонтеров.</p>
+                                <p class="text-center">Номер карты: хххх-хххх-хххх-хххх.</p>
+                                {% comment %} <p>&nbsp;&nbsp;&nbsp;&nbsp;Чтобы стать модератором, обратитесь к <a href="https://vk.com/yahz1" target="_blank">администрации сайта</a>.</p> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+</section>
+
+{% endblock %}

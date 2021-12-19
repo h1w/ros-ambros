@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'map',
     'news',
     'news.templatetags',
+    'moderation',
 ]
 
 MIDDLEWARE = [
