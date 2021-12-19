@@ -143,3 +143,5 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = '/var/www/html/rosambros/media/'
 
 # STATIC_ROOT = '/var/www/html/rosambros/ros-ambros/webmap/rosmap/static/'
+
+DOMAIN = "https://tagproject.sfedu.ru"

@@ -1,14 +1,43 @@
 {% extends 'base.html' %} {% block content %}
 
+{% comment %} <style>
+
+  .card {
+      margin: 0 auto; /* Added */
+      float: none; /* Added */
+      margin-bottom: 10px; /* Added */
+  }
+
+</style>
+
+<section class="pb-6">
 <div class="container">
     <div class="row">
-      <div class="col-md-8 card mb-4  mt-3 left  top">
-        <div class="card-body">
+      <div class="col">
+        <div class="card card-body" style="width: 50rem;">
           <h1>{% block title %} {{ new.title }} {% endblock title %}</h1>
           <p class="card-text ">{{ new.content }}</p> <!--| safe --> 
         </div>
       </div>
     </div>
   </div>
+</section> {% endcomment %}
+
+<section class="py-7">
+
+  <div class="container-lg">
+      <div class="row h-100 justify-content-center">
+          <div class="col-md-4 pt-4 px-md-2 px-lg-3" style="width: 50rem;">
+              <div class="card h-100 w-100">
+                  <div class="card card-body">
+                    <h1>{% block title %} {{ new.title }} {% endblock title %}</h1>
+                    <p class="card-text ">{{ new.content }}</p> <!--| safe --> 
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</section>
 
 {%  endblock %}

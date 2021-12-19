@@ -17,6 +17,7 @@ from PIL import Image
 import io
 from .utils import randomize_slug
 from django.contrib import messages
+from .forms import ProblemRequestForm
 
 def home(request):
     template_name = 'map/map.html'
@@ -40,7 +41,7 @@ def home(request):
             marker = folium.Marker(
                 location=[lat,lon],
                 icon=folium.Icon(color='green'),
-                popup=f"""<img width="500px" src="{settings.MEDIA_URL + marker.image_path}" alt="{marker.slug}"/><br><p>{marker.description}</p>""",
+                popup=f"""<img width="500px" src="{settings.MEDIA_URL + 'markers/' + marker.image_path}" alt="{marker.slug}"/><br><p>{marker.description}</p><a href="{settings.DOMAIN}/map/marker/{marker.slug}/problemrequest" target="_blank">Запрос на удаление метки</a>""",
                 tooltip=tooltip,
             )
             ambros_group.add_child(marker)
@@ -48,7 +49,7 @@ def home(request):
             marker = folium.Marker(
                 location=[lat, lon],
                 icon=folium.Icon(color='red'),
-                popup=f"""<img width="500px" src="{settings.MEDIA_URL + marker.image_path}" alt="{marker.slug}"/><br><p>{marker.description}</p>""",
+                popup=f"""<img width="500px" src="{settings.MEDIA_URL + 'markers/' + marker.image_path}" alt="{marker.slug}"/><br><p>{marker.description}</p><a href="{settings.DOMAIN}/map/marker/{marker.slug}/problemrequest" target="_blank">Запрос на удаление метки</a>""",
                 tooltip=tooltip,
             )
             road_group.add_child(marker)
@@ -82,7 +83,7 @@ def upload(request):
         img = img.convert('RGB')
         img_format = 'jpg'
         nametime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-        image_abspath = '{}{}.{}'.format(settings.MEDIA_ROOT, nametime, img_format)
+        image_abspath = '{}markers/{}.{}'.format(settings.MEDIA_ROOT, nametime, img_format)
         img.save(image_abspath)
         
 
@@ -119,14 +120,27 @@ def marker_detail(request, slug):
 def problem_request(request, slug):
     template_name = 'map/problem_request.html'
 
-    if request.method == "GET":
-        pass
-    elif request.method == "POST":
-        pass
-    problemrequest = ProblemRequest()
-
     context={}
+    context['form'] = ProblemRequestForm()
 
-    messages.info(request, 'Ваш запрос был отправлен.')
+    if request.method == "GET":
+        return render(request, template_name, context)
+
+    elif request.method == "POST":
+        problem_request_form = ProblemRequestForm(request.POST, request.FILES)
+
+        if problem_request_form.is_valid():
+            problem_request = problem_request_form.save(commit=False)
+            problem_request.slug = randomize_slug(slugify(unidecode(problem_request.name)))
+            problem_request.marker_slug = str(slug)
+            problem_request.save()
+
+            # messages.info(request, 'Ваш запрос был отправлен.')
+
+            return HttpResponseRedirect(request.build_absolute_uri('/'))
+        
+        context['errors'] = problem_request_form.errors
+
+        return render(request, template_name, context)
 
     return HttpResponseRedirect(request.build_absolute_uri('/'))

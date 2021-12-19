@@ -1,0 +1,70 @@
+{% extends 'base.html' %} {% block content %}
+
+{% comment %} <section class="pb-6">
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-header text-center py-1">
+            <h2>Отправить запрос на удаление метки(проблема решена)</h2>
+        </div>
+        <div class="px-3 py-4">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row g-1">
+                    <div class="col-11">Ваше имя: {{ form.name }}</div>
+                    <br>
+                    <div class="col-3">Описание: {{ form.description }}</div>
+                    <br>
+                    <div class="col-11">Содержимое: {{ form.image }}</div>
+                </div>
+                <div class="row g-1 col-2">
+                    <button class="btn btn-success btn-lg w-100" type="submit">Применить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% if errors %}
+        <div class="alert alert-danger mt-4" role="alert">
+            <p>{{ errors }}</p>
+        </div>
+    {% endif %}
+
+  </div>
+</section> {% endcomment %}
+
+<section class="py-7">
+
+    <div class="container-lg">
+        <div class="row h-100 justify-content-center">
+            <div class="col-md-4 pt-4 px-md-2 px-lg-3" style="width: 50rem;">
+                <div class="card h-100 w-100">
+                    <div class="card-header text-center py-1">
+                        <h2>Отправить запрос на удаление метки(проблема решена)</h2>
+                    </div>
+                    <div class="px-3 py-4">
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row g-1">
+                                <div class="col-5">Ваше имя: {{ form.name }}</div>
+                                <br>
+                                <div class="col-11">Описание: {{ form.description }}</div>
+                                <br>
+                                <div class="col-11">Фото: {{ form.image }}</div>
+                            </div>
+                            <br>
+                            <button class="btn btn-danger btn-lg w-30" type="submit">Отправить</button>
+
+                        </form>
+                        {% if errors %}
+                            <div class="alert alert-danger mt-4" role="alert">
+                                <p>{{ errors }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+  </section>
+
+{% endblock %}

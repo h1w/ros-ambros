@@ -1,7 +1,82 @@
 {% extends "base.html" %} {% block content %}
 
+<style>
+    #contacts-image {
+        display: block;
+        max-width: 90%;
+        height: auto;
+        margin: auto;
+        margin-bottom: 10px;
+        float: none!important;
+        border-radius: 3px;
+    }
+
+    #info {
+        margin-top: 1%;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-bottom: 5%;
+    }
+
+    {% comment %} #info-text {
+        margin-left: 5%;
+        margin-right: 5%;
+    } {% endcomment %}
+
+    #contacts-list {
+        margin-left: 30px;
+        margin-right: 30px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+    }
+</style>
+
+{% comment %} <section class="pb-6">
 <div class="container">
-    <p>что-то про волонтерство и привлечение волонтерского движения</p>
+    <div class="container" style="margin-top:2%">
+        <div class="card card-default" id="card_contacts" style="width: 50rem;">
+            <div id="contacts" class="panel-collapse collapse show" aria-expanded="true">
+                <div id="info">
+                    <div class="text-left" id="info-text">
+                        <img src="https://i.imgur.com/OVvhy8i.png" id="contacts-image"/>
+                        <br>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;Каждый человек сталкивался с проблемами ям на дорогах, но ничего не мог с этим поделать. Мы разработали проект, с помощью которого горожане смогут изменить это. Мы создаем прецедент. </p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;Например, люди, страдающие аллергией, не могут выйти на улицу в период цветения амброзии. А у автомобилей больше всего страдает подвеска, когда они наезжают, пусть даже не специально, на ямы. Проект хочет привлечь обычных граждан, возможно и волонтерские группы для поиска проблемных мест и отметке их на карте.</p>
+                    </div>        
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
 </div>
+</section> {% endcomment %}
+
+<section class="py-7">
+
+    <div class="container-lg">
+        <div class="row h-100 justify-content-center">
+            <div class="col-md-4 pt-4 px-md-2 px-lg-3" style="width: 50rem;">
+                <div class="card h-100 w-100">
+                    <div id="contacts" class="panel-collapse collapse show" aria-expanded="true">
+                        <div id="info">
+                            <div class="text-left" id="info-text">
+                                <h1 class="text-center">Волонтерство</h1>
+                                <img src="https://i.imgur.com/OVvhy8i.png" id="contacts-image"/>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;Каждый человек сталкивался с проблемами ям на дорогах, но ничего не мог с этим поделать. Мы разработали проект, с помощью которого горожане смогут изменить это. Мы создаем прецедент. </p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;Например, люди, страдающие аллергией, не могут выйти на улицу в период цветения амброзии. А у автомобилей больше всего страдает подвеска, когда они наезжают, пусть даже не специально, на ямы. Проект хочет привлечь обычных граждан, возможно и волонтерские группы для поиска проблемных мест и отметке их на карте.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+  </section>
 
 {% endblock %}
