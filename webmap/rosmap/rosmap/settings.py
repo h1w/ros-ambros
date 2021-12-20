@@ -147,3 +147,5 @@ MEDIA_ROOT = '/var/www/html/rosambros/media/'
 # STATIC_ROOT = '/var/www/html/rosambros/ros-ambros/webmap/rosmap/static/'
 
 DOMAIN = "https://tagproject.sfedu.ru"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

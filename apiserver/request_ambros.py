@@ -8,7 +8,7 @@ img_64_encode = base64.encodebytes(img).decode()
 payload = {
     "name": "Дмитрий",
     "description": "Много амброзии, сделайте что-нибудь!",
-    "gps": "47.2139, 38.9365",
+    "gps": "47.6159, 38.9115",
     "image": img_64_encode,
     "request_type": "ambros",
 }

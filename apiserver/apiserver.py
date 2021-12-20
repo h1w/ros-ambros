@@ -8,6 +8,60 @@ from pathlib import Path
 from base64 import decodestring
 import json
 
+# ambros neural network
+from keras.preprocessing import image as keras_image
+import numpy as np
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import sys
+# import tensorflow as tf
+from tensorflow.keras.models import load_model
+import requests
+import base64
+
+model = load_model('/home/frizik/SfeduNET_4.0/my_h5_model.h5')
+
+def validate_single(img_path):
+    img = keras_image.load_img(img_path, target_size=(200,200))
+    x = keras_image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    images = np.vstack([x])
+    classes = model.predict(images, batch_size=10)
+    result = False
+    if classes[0] < 0.5:
+        # Ambrosia
+        result = True
+    else:
+        # Not ambrosia
+        result = False
+    return result
+
+def push_marker_to_map(name, description, gps, img_path):
+    url = "http://localhost:8000/map/api/upload"
+
+    name = "app"
+    description = "Ragweed"
+    gps = "{}, {}".format(gps.split(' ')[1], gps.split(' ')[0])
+
+    img = Image.open(img_path)
+    img.save(img_path, quality=70, optimize=True)
+    img = open(img_path, "rb").read()
+    img_64_encode = base64.encodebytes(img).decode()
+    payload = {
+        "name": name,
+        "description": description,
+        "gps": gps,
+        "image": img_64_encode,
+        "request_type": "ambros",
+    }
+
+    # print(name)
+    # print(description)
+    # print(gps)
+
+    response = requests.post(url, data=payload, verify=False)
+    return response
+
 # Constants
 CLIENT_PATH = "/var/www/html/rosambros/clients/images"
 REPOSITORY_DIR = Path(__file__).resolve().parent.parent
@@ -124,27 +178,50 @@ def process_image():
     # Insert data to databases
     insert_status = ""
     if request_type == "ambros":
-        insert_status = rosambrosdb_insert_client(client_data) # Insert data to rosambros database for neural network
+        #insert_status = rosambrosdb_insert_client(client_data) # Insert data to rosambros database for neural network
+        validate = validate_single(img_abspath)
+        # print debug
+        timenow = datetime.datetime.now()
+        dt_string = timenow.strftime("%d/%m/%Y %H:%M:%S")
+        print(dt_string, "validate result:", validate)
+        if validate == True:
+            response = push_marker_to_map(name, description, gps, img_abspath)
+            print("Response code if validate True:", response.status_code)
+            return jsonify({
+                "msg": "success",
+                "md5": {
+                    "name": hashlib.md5(name.encode("utf-8")).hexdigest(),
+                    "description": hashlib.md5(description.encode("utf-8")).hexdigest(),
+                    "gps": hashlib.md5(gps.encode("utf-8")).hexdigest(),
+                    "image": hashlib.md5(image.encode("utf-8")).hexdigest(),
+                    "request_type": hashlib.md5(image.encode("utf-8")).hexdigest(),
+                }
+            })
     elif request_type == "road":
-        insert_status = road_insert_client(client_data) # Insert data to complete road database
+        #insert_status = road_insert_client(client_data) # Insert data to complete road database
+        pass
 
     # Return json answer
-    if insert_status["status"] != "ok":
-        return jsonify({
-            "msg": insert_status["status"],
-            "error": insert_status["error"]
-        })
-    
+    # if insert_status["status"] != "ok":
+    #     return jsonify({
+    #         "msg": insert_status["status"],
+    #         "error": insert_status["error"]
+    #     })
     return jsonify({
-            "msg": "success",
-            "md5": {
-                "name": hashlib.md5(name.encode("utf-8")).hexdigest(),
-                "description": hashlib.md5(description.encode("utf-8")).hexdigest(),
-                "gps": hashlib.md5(gps.encode("utf-8")).hexdigest(),
-                "image": hashlib.md5(image.encode("utf-8")).hexdigest(),
-                "request_type": hashlib.md5(image.encode("utf-8")).hexdigest(),
-            }
-        })
+        "msg": "upload error",
+        "error": "upload error"
+    })
+    
+    # return jsonify({
+    #         "msg": "success",
+    #         "md5": {
+    #             "name": hashlib.md5(name.encode("utf-8")).hexdigest(),
+    #             "description": hashlib.md5(description.encode("utf-8")).hexdigest(),
+    #             "gps": hashlib.md5(gps.encode("utf-8")).hexdigest(),
+    #             "image": hashlib.md5(image.encode("utf-8")).hexdigest(),
+    #             "request_type": hashlib.md5(image.encode("utf-8")).hexdigest(),
+    #         }
+    #     })
 
 
 #### App error handlers ####
